@@ -144,7 +144,11 @@ if has("cscope")
 	    	cs add cscope.vim
 		endif
 
-		set grepprg=ack
+		"set grepprg=ack
+		set grepprg=ag\ --vimgrep\ $*
+        set grepformat=%f:%l:%c:%m
+		"let g:ackprg = 'ag --vimgrep' "show all matches on each line
+		"let g:ackprg = 'ag --nogroup --nocolor --column'
 	else
 		"set csprg=C:/bin/cscope.exe
 		set csprg=gtags-cscope.exe
@@ -215,16 +219,20 @@ set tabpagemax=15
 " usetab - use existing open buffer even in a different tab
 " split - split before opening buffer in a new window
 " newtab - overrides split by opening buffer in a new tab
-set switchbuf=useopen,split
+set switchbuf=useopen
 
 set laststatus=2
 "set statusline=%<%n\ %t\ %(%h%m%r%y%)\ %=%b\ 0x%B\ \ %l,%c%V\ %P
-set statusline=%<%n\ %t\ %{fugitive#statusline()}\ %(%h%m%r%y%)\ %=%b\ 0x%B\ \ %l,%c%V\ %P
+set statusline=%<%n\ %t\ %{fugitive#statusline()}\ %{ObsessionStatus()}\ %(%h%m%r%y%)\ %=%b\ 0x%B\ \ %l,%c%V\ %P
 
 syn region myFold start="{" end="}" transparent fold
 syn sync fromstart
 
+" Do not automatically set pwd to directory of current file.
 set noautochdir
+" Set local working directory to path of current file unless path is /tmp.
+"autocmd BufEnter * if expand("%:p:h") !~ '^/tmp' | silent! lcd %:p:h | endif
+
 set path+=../..,../../..,
 set magic
 set noautoread
@@ -238,7 +246,7 @@ set cindent
 "set cinkeys=
 set cinwords=if,else,while,do,for,switch,try,catch
 set cinoptions=>s,es,ns,f0,{0,}0,^0,L-1,:0,=s,l1,b0,g0,hs,N-s,t0,is,+s,c1,C1,/0,(0,W4,u0,U1
-set expandtab
+set noexpandtab
 set noautoindent
 set smartindent
 set smarttab
@@ -259,6 +267,7 @@ set textwidth=0
 set winwidth=1
 set wildignore=tags,cscope*,*.o,.git,commit.log,diff.txt,session.vim,*.swp
 set wildmenu
+set nopaste " set paste to turn off all formating for pasting from the clipboard.
 
 set foldenable
 set foldmethod=syntax
@@ -331,9 +340,7 @@ noremap <F10> :cnext<CR>
 noremap <F11> :set nohlsearch<CR>
 noremap <F12> :set hlsearch<CR>
 
-noremap <C-F1> :new $VIM/vimrc<CR>
 noremap <C-F7> :1,%!Uncrustify.exe -q -c c:\uncrustify.cfg
-noremap <C-F12> :call CleanAndOpenMakeLog()
 
 noremap <S-Up> <C-W>_
 noremap <S-Down> :resize 1<<CR>
@@ -413,9 +420,14 @@ let errormarker_warningtypes = "wW"
 "-----------------------------------------------------------------------------
 "                               clang-format
 "-----------------------------------------------------------------------------
-noremap <C-K> :!clang-format<CR>
-inoremap <C-K> <c-o>:!clang-format<CR>
+noremap <C-K> :!clang-format
+inoremap <C-K> <c-o>:!clang-format
 
+
+"-----------------------------------------------------------------------------
+"                              clang-complete
+"-----------------------------------------------------------------------------
+let g:clang_user_options = '-std=c++11'
 
 "-----------------------------------------------------------------------------
 "                          Vim-Session Plugin Settings
