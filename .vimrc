@@ -145,7 +145,7 @@ if has("cscope")
 		endif
 
 		"set grepprg=ack
-		set grepprg=ag\ --vimgrep\ $*
+		set grepprg=ag\ --ignore-dir\ builds\ --vimgrep\ $*
         set grepformat=%f:%l:%c:%m
 		"let g:ackprg = 'ag --vimgrep' "show all matches on each line
 		"let g:ackprg = 'ag --nogroup --nocolor --column'
@@ -238,6 +238,8 @@ set magic
 set noautoread
 set nowrap
 set linebreak
+set nolist
+set listchars=eol:$,tab:+-,trail:-,extends:>,precedes:<,nbsp:%
 set nobackup
 set autowrite
 set tabstop=4
@@ -326,7 +328,7 @@ noremap _hh :new %:p:h/../%:r:r.h
 noremap _HH :vnew %:p:h/../%:r:r.h
 
 noremap! <F1> <Esc> "Turn off help key - too close to escape on notebook keyboard.
-"nnoremap <F2>
+nnoremap <F2> :!clang-format
 "noremap <F3>
 nnoremap <F4> :GundoToggle<CR>
 
@@ -362,6 +364,11 @@ if has("win32")
 	    noremap <C-Left> :vertical resize -1<CR>
 	    noremap <C-Right> :vertical resize +1<CR> " CTRL-L is already used for redraw.
     endif
+else
+	nnoremap <C-J> <C-W><C-J>
+	nnoremap <C-K> <C-W><C-K>
+	nnoremap <C-L> <C-W><C-L>
+	nnoremap <C-H> <C-W><C-H>
 endif
 
 
@@ -415,14 +422,6 @@ let errormarker_warningtext="WA"
 let &errorformat="%f:%l: %t%*[^:]:%m," . &errorformat
 let &errorformat="%f:%l:%c: %t%*[^:]:%m," . &errorformat
 let errormarker_warningtypes = "wW"
-
-
-"-----------------------------------------------------------------------------
-"                               clang-format
-"-----------------------------------------------------------------------------
-noremap <C-K> :!clang-format
-inoremap <C-K> <c-o>:!clang-format
-
 
 "-----------------------------------------------------------------------------
 "                              clang-complete
