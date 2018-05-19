@@ -324,8 +324,8 @@ endif
 set sessionoptions=curdir,folds,resize,slash,tabpages,winpos,winsize
 
 " Load header file from directory above the .cpp file (:help filename-modifiers).
-noremap _hh :new %:p:h/../%:r:r.h
-noremap _HH :vnew %:p:h/../%:r:r.h
+"noremap _hh :new %:p:h/../%:r:r.h
+"noremap _HH :vnew %:p:h/../%:r:r.h
 
 noremap! <F1> <Esc> "Turn off help key - too close to escape on notebook keyboard.
 nnoremap <F2> :!clang-format
@@ -426,7 +426,7 @@ let errormarker_warningtypes = "wW"
 "-----------------------------------------------------------------------------
 "                              clang-complete
 "-----------------------------------------------------------------------------
-let g:clang_user_options = '-std=c++11'
+"let g:clang_user_options = '-std=c++11'
 
 "-----------------------------------------------------------------------------
 "                          Vim-Session Plugin Settings
@@ -443,6 +443,26 @@ set sessionoptions+=resize
 "-----------------------------------------------------------------------------
 nnoremap <leader>md :%!c:/bin/Markdown.pl --html4tags<CR>
 
+"-----------------------------------------------------------------------------
+" Word Processor mode.  Invoke with :WP.
+" https://jasonheppler.org/2012/12/05/word-processor-mode-in-vim/
+"-----------------------------------------------------------------------------
+"func! WordProcessor()
+"	" movement changes
+"	map j gj
+"	map k gk
+"	" formatting text
+"	setlocal formatoptions=1
+"	setlocal noexpandtab
+"	setlocal wrap
+"	setlocal linebreak
+"	" spelling and thesaurus
+"	setlocal spell spelllang=en_us
+"	set thesaurus+=/home/bgb/.vim/thesaurus/mthesaur.txt
+"	" complete+=s makes autocompletion search the thesaurus
+"	set complete+=s
+"endfu
+"com! WP call WordProcessor()
 
 "-----------------------------------------------------------------------------
 "                     Load all help files in vimfiles/doc. 
