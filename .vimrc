@@ -280,12 +280,12 @@ colorscheme Mustang
 
 if has("gui")
     set guioptions=egt
-	set term=win32
 
 	if has("unix")
 		set mouse=vcr
 		set guifont=Monospace\ 9
 	else
+		set term=win32
 		set mouse=a
     	set lines=60
    		set columns=199
