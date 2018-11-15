@@ -369,6 +369,7 @@ else
 	nnoremap <C-K> <C-W><C-K>
 	nnoremap <C-L> <C-W><C-L>
 	nnoremap <C-H> <C-W><C-H>
+	set encoding=utf-8
 endif
 
 
@@ -463,6 +464,20 @@ nnoremap <leader>md :%!c:/bin/Markdown.pl --html4tags<CR>
 "	set complete+=s
 "endfu
 "com! WP call WordProcessor()
+
+
+"-----------------------------------------------------------------------------
+" setup vim-plug plugin manager
+"-----------------------------------------------------------------------------
+" Specify a directory for plugins 
+call plug#begin('~/.vim/plugged')
+"Plug 'valid git URL'	" Any valid git URL is allowed for plugin
+"Plug 'foo/bar'			" Shorthand notation for plugin
+Plug 'pearofducks/ansible-vim'	" install ansible-vim for syntax highlighting
+Plug 'neomake/neomake'			" install neomake for linting
+" Initialize plugin system
+call plug#end()
+
 
 "-----------------------------------------------------------------------------
 "                     Load all help files in vimfiles/doc. 
