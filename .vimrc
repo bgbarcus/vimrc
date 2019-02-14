@@ -440,14 +440,14 @@ set sessionoptions+=resize
 "-----------------------------------------------------------------------------
 "								Syntastic Settings
 "-----------------------------------------------------------------------------
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 0
-let g:syntastic_cpp_compiler_options = '-std=c++17\ -isystem /opt/gcc-multilib-8.2.0/include/c++/8.2.0/'
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 0
+"let g:syntastic_check_on_wq = 0
+"let g:syntastic_cpp_compiler_options = '-std=c++17\ -isystem /opt/gcc-multilib-8.2.0/include/c++/8.2.0/'
 
 "-----------------------------------------------------------------------------
 "                        Map Markdown
@@ -475,50 +475,36 @@ nnoremap <leader>md :%!c:/bin/Markdown.pl --html4tags<CR>
 "endfu
 "com! WP call WordProcessor()
 
-
-"-----------------------------------------------------------------------------
-" setup vim-plug plugin manager
-"-----------------------------------------------------------------------------
-" Specify a directory for plugins 
-call plug#begin('~/.vim/plugged')
-"Plug 'valid git URL'	" Any valid git URL is allowed for plugin
-"Plug 'foo/bar'			" Shorthand notation for plugin
-Plug 'pearofducks/ansible-vim'	" install ansible-vim for syntax highlighting
-Plug 'neomake/neomake'			" install neomake for linting
-" Initialize plugin system
-call plug#end()
-
-
 "-----------------------------------------------------------------------------
 "                     Load all help files in vimfiles/doc. 
 "-----------------------------------------------------------------------------
 "Helptags
 
-
+"-----------------------------------------------------------------------------
 " Prevent autocmd, shell, and write commands in .vimrc in 
 " current directory (not $HOME/.vimrc).
 " Help says put this at the end of ~/.vimrc.
+"-----------------------------------------------------------------------------
 set secure
-
 
 "-----------------------------------------------------------------------------
 " Setup vim-plug plugin manager.
 "-----------------------------------------------------------------------------
 " Specify a directory for plugins 
-call plug#begin('~/.vim/plugged')
+"call plug#begin('~/.vim/plugged')
 " Any valid git URL is allowed for plugin
-Plug 'pearofducks/ansible-vim'
+"Plug 'pearofducks/ansible-vim'
 " Shorthand notation for plugin
-Plug 'neomake/neomake'
+"Plug 'neomake/neomake'
 " Initialize plugin system
-call plug#end()
+"call plug#end()
 
 " When writing a buffer (no delay).
 "call neomake#configure#automake('w')
 " When writing a buffer (no delay), and on normal mode changes (after 750ms).
 "call neomake#configure#automake('nw', 750)
 " When reading a buffer (after 1s), and when writing (no delay).
-call neomake#configure#automake('rw', 1000)
+"call neomake#configure#automake('rw', 1000)
 " Full config: when writing or reading a buffer, and on changes in insert and
 " normal mode (after 1s; no delay when writing).
 "call neomake#configure#automake('nrwi', 500)
