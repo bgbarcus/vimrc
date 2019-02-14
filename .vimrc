@@ -364,6 +364,25 @@ noremap <S-Right> :vertical resize 139<CR>
 noremap <C-S-Left> :exe 'vertical resize ' &columns<CR>
 noremap <C-S-Right> :exe 'vertical resize ' &columns<CR>
 
+if has("win32")
+    if has("gui")
+	    noremap <C-Up> :resize +1<CR>
+	    noremap <C-Down> :resize -1<CR>
+	    noremap <C-Left> :vertical resize -1<CR>
+	    noremap <C-Right> :vertical resize +1<CR>
+    else
+	    noremap <C-K> :resize +1<CR>
+	    noremap <C-J> :resize -1<CR>
+	    noremap <C-Left> :vertical resize -1<CR>
+	    noremap <C-Right> :vertical resize +1<CR> " CTRL-L is already used for redraw.
+    endif
+else
+	nnoremap <C-J> <C-W><C-J>
+	nnoremap <C-K> <C-W><C-K>
+	nnoremap <C-L> <C-W><C-L>
+	nnoremap <C-H> <C-W><C-H>
+	set encoding=utf-8
+endif
 
 "-----------------------------------------------------------------------------
 " tagbar
@@ -455,6 +474,20 @@ nnoremap <leader>md :%!c:/bin/Markdown.pl --html4tags<CR>
 "	set complete+=s
 "endfu
 "com! WP call WordProcessor()
+
+
+"-----------------------------------------------------------------------------
+" setup vim-plug plugin manager
+"-----------------------------------------------------------------------------
+" Specify a directory for plugins 
+call plug#begin('~/.vim/plugged')
+"Plug 'valid git URL'	" Any valid git URL is allowed for plugin
+"Plug 'foo/bar'			" Shorthand notation for plugin
+Plug 'pearofducks/ansible-vim'	" install ansible-vim for syntax highlighting
+Plug 'neomake/neomake'			" install neomake for linting
+" Initialize plugin system
+call plug#end()
+
 
 "-----------------------------------------------------------------------------
 "                     Load all help files in vimfiles/doc. 
