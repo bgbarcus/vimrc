@@ -22,13 +22,7 @@ autocmd BufReadPost fugitive://* set bufhidden=delete
 " turn off vim-json plugin syntax concealment in json files.
 let g:vim_json_syntax_conceal = 0
 
-if has("unix")
-	let g:ycm_confirm_extra_conf = 0					" default = 1
-	let g:ycm_min_num_of_chars_for_completion = 3		" default = 2
-	let g:ycm_min_num_identifiers_candidate_chars = 0	" default = 0
-	let g:ycm_show_diagnostics_ui = 1                   " default = 1
-	let g:ycm_enable_diagnostic_highlighting = 0        " default = 1
-else
+if has("win32")
 	behave mswin
 
 	" read in my colours and default colours from the files 
@@ -98,6 +92,23 @@ else
     endfunction
 
     set diffexpr=MyDiff()
+
+    if has("gui")
+	    noremap <C-Up> :resize +1<CR>
+	    noremap <C-Down> :resize -1<CR>
+	    noremap <C-Left> :vertical resize -1<CR>
+	    noremap <C-Right> :vertical resize +1<CR>
+    else
+	    noremap <C-K> :resize +1<CR>
+	    noremap <C-J> :resize -1<CR>
+	    noremap <C-Left> :vertical resize -1<CR>
+	    noremap <C-Right> :vertical resize +1<CR> " CTRL-L is already used for redraw.
+    endif
+else
+	nnoremap <C-J> <C-W><C-J>
+	nnoremap <C-K> <C-W><C-K>
+	nnoremap <C-L> <C-W><C-L>
+	nnoremap <C-H> <C-W><C-H>
 endif
 
 
@@ -113,6 +124,12 @@ let c_no_curly_error = 1
 "  Local Modifications
 " ---------------------------------------------------------------------------
 let g:load_doxygen_syntax=1
+
+
+" ---------------------------------------------------------------------------
+"  Change colorscheme when running vimdiff from inside vim.
+" ---------------------------------------------------------------------------
+au FilterWritePre * if &diff | colorscheme astronaut | endif
 
 
 " ---------------------------------------------------------------------------
@@ -136,29 +153,11 @@ augroup END
 if has("cscope")
 	set nocsverb
 
-	if has("unix")
-		set csprg=cscope
+	set csprg=gtags-cscope
 	
-		" add any database in current directory
-		if filereadable("cscope.vim")
-	    	cs add cscope.vim
-		endif
-
-		"set grepprg=ack
-		set grepprg=ag\ --ignore-dir\ builds\ --vimgrep\ $*
-        set grepformat=%f:%l:%c:%m
-		"let g:ackprg = 'ag --vimgrep' "show all matches on each line
-		"let g:ackprg = 'ag --nogroup --nocolor --column'
-	else
-		"set csprg=C:/bin/cscope.exe
-		set csprg=gtags-cscope.exe
-	
-		" add any database in current directory
-		if filereadable("GTAGS")
-	    	cs add GTAGS
-		endif
-
-		set grepprg=ack.pl\ --noenv\ --ignore-directory=_CHE
+	" add any database in current directory
+	if filereadable("GTAGS")
+    	cs add GTAGS
 	endif
 
 	set csverb
@@ -209,6 +208,10 @@ if has("cscope")
 	"nnoremap <C-[><C-[>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 endif " cscope
 
+" Read .vimrc from the current directory.
+" Can be used to store project specific settings.
+set exrc
+
 set diffopt=filler,iwhite,vertical
 
 set tabpagemax=15
@@ -242,24 +245,32 @@ set nolist
 set listchars=eol:$,tab:+-,trail:-,extends:>,precedes:<,nbsp:%
 set nobackup
 set autowrite
-set tabstop=4
-set shiftwidth=4
+
 set cindent
 "set cinkeys=
 set cinwords=if,else,while,do,for,switch,try,catch
 set cinoptions=>s,es,ns,f0,{0,}0,^0,L-1,:0,=s,l1,b0,g0,hs,N-s,t0,is,+s,c1,C1,/0,(0,W4,u0,U1
+
+set tabstop=4
+set shiftwidth=4
 set noexpandtab
 set noautoindent
 set smartindent
 set smarttab
 set copyindent
 set preserveindent
+set nopaste " set paste to turn off all formating for pasting from the clipboard.
+"set softtabstop=4 " Use a mix of tabs and spaces to act as if tabstop were set to this value.
+
 set nosplitright
 set scrolljump=1
 set scrolloff=3
 set sidescroll=1
+set signcolumn=no " default scl=auto
 set nowrapscan
 set noincsearch
+set grepprg=ag\ --ignore-dir\ build\ --ignore-dir\ builds\ --vimgrep\ $*
+set grepformat=%f:%l:%c:%m
 set makeprg=make
 set nocursorline
 set nocursorcolumn
@@ -269,14 +280,11 @@ set textwidth=0
 set winwidth=1
 set wildignore=tags,cscope*,*.o,.git,commit.log,diff.txt,session.vim,*.swp
 set wildmenu
-set nopaste " set paste to turn off all formating for pasting from the clipboard.
 
 set foldenable
 set foldmethod=syntax
 set foldcolumn=0
 set foldlevel=99
-
-colorscheme Mustang
 
 if has("gui")
     set guioptions=egt
@@ -318,7 +326,11 @@ if has("gui")
 
     colorscheme Mustang
 else
-	colorscheme koehler
+	if &diff
+		colorscheme astronaut
+	else
+		colorscheme koehler
+	endif
 endif
 
 set sessionoptions=curdir,folds,resize,slash,tabpages,winpos,winsize
@@ -328,7 +340,7 @@ set sessionoptions=curdir,folds,resize,slash,tabpages,winpos,winsize
 "noremap _HH :vnew %:p:h/../%:r:r.h
 
 noremap! <F1> <Esc> "Turn off help key - too close to escape on notebook keyboard.
-nnoremap <F2> :!clang-format
+"nnoremap <F2> :!clang-format
 "noremap <F3>
 nnoremap <F4> :GundoToggle<CR>
 
@@ -342,7 +354,7 @@ noremap <F10> :cnext<CR>
 noremap <F11> :set nohlsearch<CR>
 noremap <F12> :set hlsearch<CR>
 
-noremap <C-F7> :1,%!Uncrustify.exe -q -c c:\uncrustify.cfg
+"noremap <C-F7> :1,%!Uncrustify.exe -q -c c:\uncrustify.cfg
 
 noremap <S-Up> <C-W>_
 noremap <S-Down> :resize 1<<CR>
@@ -352,45 +364,17 @@ noremap <S-Right> :vertical resize 139<CR>
 noremap <C-S-Left> :exe 'vertical resize ' &columns<CR>
 noremap <C-S-Right> :exe 'vertical resize ' &columns<CR>
 
-if has("win32")
-    if has("gui")
-	    noremap <C-Up> :resize +1<CR>
-	    noremap <C-Down> :resize -1<CR>
-	    noremap <C-Left> :vertical resize -1<CR>
-	    noremap <C-Right> :vertical resize +1<CR>
-    else
-	    noremap <C-K> :resize +1<CR>
-	    noremap <C-J> :resize -1<CR>
-	    noremap <C-Left> :vertical resize -1<CR>
-	    noremap <C-Right> :vertical resize +1<CR> " CTRL-L is already used for redraw.
-    endif
-else
-	nnoremap <C-J> <C-W><C-J>
-	nnoremap <C-K> <C-W><C-K>
-	nnoremap <C-L> <C-W><C-L>
-	nnoremap <C-H> <C-W><C-H>
-endif
-
 
 "-----------------------------------------------------------------------------
-" Tag List
+" tagbar
 "-----------------------------------------------------------------------------
-"noremap <C-F10> :TlistOpen<CR>
-"noremap <C-F11> :TlistClose<CR>
-"noremap <C-F12> :TlistToggle<CR>
-"set Tlist_Ctags_Cmd=C:\bin\ctags.exe
-"let Tlist_Auto_Open=1 " automatically open taglist on startup
-"let Tlist_Close_On_Select=1 " close list after selecting tag
-"let Tlist_Use_SingleClick=1 " open tag on single mouse click
-"let Tlist_Exit_OnlyWindow=1 " exit vim if taglist is the only windows
-"let Tlist_Show_Menu=1 " put tags menu on gvim menu bar
-
+"let g:tagbar_ctags_bin = '/usr/local/bin/ctags'
 
 "-----------------------------------------------------------------------------
 "                           MultipleSearch Settings
 "-----------------------------------------------------------------------------
 let g:MultipleSearchMaxColors = 6
-let g:MultipleSearchColorSequence = "Red,Yellow,Green,Blue,Magenta,White"
+let g:MultipleSearchColorSequence = "Red,Yellow,Magenta,White,Blue"
 let g:MultipleSearchTextColorSequence = "white,black,white,black,white,black"
 
 
@@ -399,24 +383,21 @@ let g:MultipleSearchTextColorSequence = "white,black,white,black,white,black"
 set tags=./tags,tags,../tags,../../tags
 
 
-" Vim Commander
-"noremap <silent> <S-F1> :call VimCommanderToggle()<CR>
-
-
 "-----------------------------------------------------------------------------
 " Show Marks
 "-----------------------------------------------------------------------------
 " Disabled until I find the cause of that annoying error message.
 let showmarks_enable=0
-let showmarks_textlower="\t>"
-let showmarks_textupper="\t+"
-" This is the default list containing all marks.
-let showmarks_include="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.'`^<>[]{}()\""
-
+let g:showmarks_include="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.'`^<>[]{}()\""
+let g:showmarks_ignore_type="hmpqr"
+let g:showmarks_textlower="\t>"
+let g:showmarks_textupper="\t+"
+let g:showmarks_textother="\t-"
 
 "-----------------------------------------------------------------------------
 " Error Marker
 "-----------------------------------------------------------------------------
+let loaded_errormarker=1 " disable plugin
 let errormarker_errortext="ER"
 let errormarker_warningtext="WA"
 let &errorformat="%f:%l: %t%*[^:]:%m," . &errorformat
@@ -426,7 +407,7 @@ let errormarker_warningtypes = "wW"
 "-----------------------------------------------------------------------------
 "                              clang-complete
 "-----------------------------------------------------------------------------
-"let g:clang_user_options = '-std=c++11'
+"let g:clang_user_options = '-std=c++17'
 
 "-----------------------------------------------------------------------------
 "                          Vim-Session Plugin Settings
@@ -437,6 +418,17 @@ let g:session_command_aliases = 1
 set sessionoptions-=options
 set sessionoptions+=resize
 
+"-----------------------------------------------------------------------------
+"								Syntastic Settings
+"-----------------------------------------------------------------------------
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_cpp_compiler_options = '-std=c++17\ -isystem /opt/gcc-multilib-8.2.0/include/c++/8.2.0/'
 
 "-----------------------------------------------------------------------------
 "                        Map Markdown
@@ -468,5 +460,34 @@ nnoremap <leader>md :%!c:/bin/Markdown.pl --html4tags<CR>
 "                     Load all help files in vimfiles/doc. 
 "-----------------------------------------------------------------------------
 "Helptags
+
+
+" Prevent autocmd, shell, and write commands in .vimrc in 
+" current directory (not $HOME/.vimrc).
+" Help says put this at the end of ~/.vimrc.
+set secure
+
+
+"-----------------------------------------------------------------------------
+" Setup vim-plug plugin manager.
+"-----------------------------------------------------------------------------
+" Specify a directory for plugins 
+call plug#begin('~/.vim/plugged')
+" Any valid git URL is allowed for plugin
+Plug 'pearofducks/ansible-vim'
+" Shorthand notation for plugin
+Plug 'neomake/neomake'
+" Initialize plugin system
+call plug#end()
+
+" When writing a buffer (no delay).
+"call neomake#configure#automake('w')
+" When writing a buffer (no delay), and on normal mode changes (after 750ms).
+"call neomake#configure#automake('nw', 750)
+" When reading a buffer (after 1s), and when writing (no delay).
+call neomake#configure#automake('rw', 1000)
+" Full config: when writing or reading a buffer, and on changes in insert and
+" normal mode (after 1s; no delay when writing).
+"call neomake#configure#automake('nrwi', 500)
 
 " ----------------------------------- eof -----------------------------------
